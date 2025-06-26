@@ -3,11 +3,11 @@ import { redirect } from 'next/navigation';
 import { isFlagEnabled } from '@/lib/feature-flags';
 
 export const metadata: Metadata = {
-  title: 'Create Agent | Kortix Suna',
-  description: 'Interactive agent playground powered by Kortix Suna',
+  title: 'Create Agent | NexI',
+  description: 'Interactive agent playground powered by NexI',
   openGraph: {
-    title: 'Agent Playground | Kortix Suna',
-    description: 'Interactive agent playground powered by Kortix Suna',
+    title: 'Agent Playground | NexI',
+    description: 'Interactive agent playground powered by NexI',
     type: 'website',
   },
 };

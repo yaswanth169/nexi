@@ -1,4 +1,4 @@
-# Suna frontend
+# NexI frontend
 
 ## Getting Started
 

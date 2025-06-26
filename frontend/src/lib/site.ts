@@ -1,10 +1,10 @@
 export const siteConfig = {
-  name: 'Kortix Suna',
-  url: 'https://suna.so/',
-  description: 'Kortix AI',
+  name: 'NexI',
+  url: 'https://NexI.so/',
+  description: 'AI',
   links: {
-    twitter: 'https://x.com/kortixai',
-    github: 'https://github.com/kortix-ai/',
+    twitter: 'https://x.com/nexi',
+    github: 'https://github.com/nexi-ai/',
     linkedin: 'https://www.linkedin.com/company/kortix/',
   },
 };

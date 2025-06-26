@@ -1,4 +1,4 @@
-# Suna Backend
+# NexI Backend
 
 ## Running the backend
 
