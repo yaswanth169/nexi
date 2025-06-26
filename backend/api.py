@@ -126,8 +126,8 @@ allow_origin_regex = None
 
 # Add staging-specific origins
 if config.ENV_MODE == EnvMode.STAGING:
-    allowed_origins.append("https://staging.NexI.so")
-    allow_origin_regex = r"https://NexI-.*-prjcts\.vercel\.app"
+    allowed_origins.append("https://staging.suna.so")
+    allow_origin_regex = r"https://suna-.*-prjcts\.vercel\.app"
 
 app.add_middleware(
     CORSMiddleware,
