@@ -38,19 +38,19 @@ export function UseCasesSection() {
         </p>
       </SectionHeader>
 
-      <div className="relative w-full h-full">
-        <div className="grid min-[650px]:grid-cols-2 min-[900px]:grid-cols-3 min-[1200px]:grid-cols-4 gap-4 w-full max-w-6xl mx-auto px-6">
+      <div className="relative w-full h-full px-6 max-w-6xl mx-auto">
+        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
           {featuredUseCases.map((useCase: UseCase) => (
             <div
               key={useCase.id}
-              className="rounded-xl overflow-hidden relative h-fit min-[650px]:h-full flex flex-col md:shadow-[0px_61px_24px_-10px_rgba(0,0,0,0.01),0px_34px_20px_-8px_rgba(0,0,0,0.05),0px_15px_15px_-6px_rgba(0,0,0,0.09),0px_4px_8px_-2px_rgba(0,0,0,0.10),0px_0px_0px_1px_rgba(0,0,0,0.08)] bg-accent"
+              className="break-inside-avoid bg-accent rounded-2xl overflow-hidden shadow-lg transition-transform hover:-translate-y-1.5 hover:shadow-xl"
             >
               <div className="flex flex-col gap-4 p-4">
                 <div className="flex items-center gap-3">
                   <div className="rounded-full bg-secondary/10 p-2">
                     <svg
-                      width="16"
-                      height="16"
+                      width="20"
+                      height="20"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
@@ -59,40 +59,37 @@ export function UseCasesSection() {
                       {useCase.icon}
                     </svg>
                   </div>
-                  <h3 className="text-lg font-medium line-clamp-1">
-                    {useCase.title}
-                  </h3>
+                  <h3 className="text-lg font-semibold truncate">{useCase.title}</h3>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed line-clamp-3">
+                <p className="text-sm text-muted-foreground leading-relaxed">
                   {useCase.description}
                 </p>
               </div>
 
               <div className="mt-auto">
                 <hr className="border-border dark:border-white/20 m-0" />
-
-                <div className="w-full h-[160px] bg-accent/10">
-                  <div className="relative w-full h-full overflow-hidden">
-                    <img
-                      src={
-                        useCase.image ||
-                        `https://placehold.co/800x400/f5f5f5/666666?text=NexI+${useCase.title.split(' ').join('+')}`
-                      }
-                      alt={`NexI ${useCase.title}`}
-                      className="w-full h-full object-cover"
-                    />
-                    <a
-                      href={useCase.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end justify-start p-4 group"
-                    >
-                      <span className="flex items-center gap-2 text-sm text-white font-medium">
-                        Watch replay
-                        <ArrowRight className="size-4 transform group-hover:translate-x-1 transition-transform" />
-                      </span>
-                    </a>
-                  </div>
+                <div className="relative w-full h-[180px] bg-accent/10">
+                  <img
+                    src={
+                      useCase.image ||
+                      `https://placehold.co/800x400/f5f5f5/666666?text=NexI+${useCase.title
+                        .split(' ')
+                        .join('+')}`
+                    }
+                    alt={`NexI ${useCase.title}`}
+                    className="w-full h-full object-cover"
+                  />
+                  <a
+                    href={useCase.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end justify-start p-4 group"
+                  >
+                    <span className="flex items-center gap-2 text-sm text-white font-medium">
+                      Watch replay
+                      <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
+                    </span>
+                  </a>
                 </div>
               </div>
             </div>
@@ -105,6 +102,7 @@ export function UseCasesSection() {
           </div>
         )}
       </div>
+
     </section>
   );
 }

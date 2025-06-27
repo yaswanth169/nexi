@@ -20,10 +20,8 @@ export function FooterSection() {
   }, []);
 
   const logoSrc = !mounted
-    ? '/kortix-logo.svg'
-    : resolvedTheme === 'dark'
-      ? '/kortix-logo-white.svg'
-      : '/kortix-logo.svg';
+    ? '/nexi.png'
+    : '/nexi.png';
 
   return (
     <footer id="footer" className="w-full pb-0">
