@@ -1125,7 +1125,7 @@ export const siteConfig = {
           title: 'Documentation',
           url: 'https://github.com/nexi-ai/NexI',
         },
-        { id: 7, title: 'Discord', url: 'https://discord.gg/Py6pCBUUPw' },
+        { id: 7, title: 'Discord', url: 'https://discord.gg/nexi-ai' },
         { id: 8, title: 'GitHub', url: 'https://github.com/nexi-ai/NexI' },
       ],
     },
