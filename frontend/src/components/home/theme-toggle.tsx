@@ -12,6 +12,7 @@ export function ThemeToggle() {
     <Button
       variant="outline"
       size="icon"
+      // onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
       onClick={() => setTheme('dark')}
       className="cursor-pointer rounded-full h-8 w-8"
     >
