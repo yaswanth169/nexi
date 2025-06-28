@@ -69,7 +69,7 @@ export default function CapabilitiesSection() {
     }, []);
 
     return (
-        <section id="capabilities" className="relative w-full text-white py-24 overflow-hidden">
+        <section id="capabilities" className="relative w-full text-white overflow-hidden py-24 bg-grid">
             {/* Mouse-follow spotlight */}
             <div
                 ref={spotlightRef}
@@ -92,27 +92,30 @@ export default function CapabilitiesSection() {
                 </h1>
             </div>
 
+            {/* Content */}
             <div className="relative z-20 max-w-7xl mx-auto px-6">
-                <h2 className="text-4xl sm:text-5xl font-extrabold mb-16 text-center tracking-tight">
+                <h2 className="text-4xl sm:text-5xl font-extrabold mb-16 text-center tracking-tight bg-gradient-to-r from-white via-[#a18fff] to-white bg-clip-text text-transparent">
                     What NexI Can Do
                 </h2>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10">
                     {capabilities.map((item, index) => {
                         const Icon = item.icon;
                         return (
                             <div
                                 key={index}
-                                className={cn(
-                                    "cursor-pointer group bg-black/50 border border-neutral-800 rounded-2xl p-6 min-h-[220px] shadow-md transition-all duration-300 ease-in-out",
-                                    "hover:border-[#a18fff] hover:shadow-[0_0_20px_#a18fff44]"
-                                )}
+                                className="group cursor-pointer bg-black/60 border border-neutral-800 backdrop-blur-md rounded-2xl p-6 min-h-[240px] shadow-[0_0_10px_#00000033] transition-all hover:shadow-[0_0_24px_#a18fff55] hover:-translate-y-1 hover:border-[#a18fff] duration-300"
                             >
-                                <div className="mb-4">
-                                    <Icon className="w-8 h-8 text-white group-hover:text-[#a18fff] group-hover:scale-110 transition-all duration-300" />
+                                {/* Icon Circle */}
+                                <div className="w-12 h-12 flex items-center justify-center rounded-full border border-[#a18fff22] bg-[#a18fff11] mb-4 group-hover:scale-110 transition-transform">
+                                    <Icon className="w-6 h-6 text-[#a18fff]" />
                                 </div>
-                                <div className="text-xl font-semibold mb-2">{item.title}</div>
-                                <p className="text-sm text-neutral-400 leading-relaxed">
+
+                                <h3 className="text-lg font-semibold mb-2 text-white group-hover:text-[#a18fff] transition">
+                                    {item.title}
+                                </h3>
+
+                                <p className="text-sm text-neutral-400 leading-relaxed tracking-tight">
                                     {item.description}
                                 </p>
                             </div>
@@ -123,11 +126,16 @@ export default function CapabilitiesSection() {
 
             {/* Scoped styles */}
             <style jsx>{`
-        .stroke-text {
-          -webkit-text-stroke: 2px rgba(255, 255, 255, 0.3);
-          color: transparent;
-        }
-      `}</style>
+    .stroke-text {
+      -webkit-text-stroke: 2px rgba(255, 255, 255, 0.2);
+      color: transparent;
+    }
+    .bg-grid {
+      background-image: radial-gradient(rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+  `}</style>
         </section>
+
     );
 }

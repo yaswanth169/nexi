@@ -1,16 +1,22 @@
 'use client';
 
 import { useEffect, useState, FormEvent } from 'react';
-import { ArrowUp } from 'lucide-react';
+import { ArrowUp, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogOverlay } from '@/components/ui/dialog';
 import GoogleSignIn from '@/components/GoogleSignIn';
 import { useAuth } from '@/components/AuthProvider';
 import { useInitiateAgentMutation } from '@/hooks/react-query/dashboard/use-initiate-agent';
 import { useThreadQuery } from '@/hooks/react-query/threads/use-threads';
 import { siteConfig } from '@/lib/home';
+import { SubmitButton } from '@/components/ui/submit-button';
+import { Input } from '@/components/ui/input';
 
+// Custom dialog overlay with blur effect
+const BlurredDialogOverlay = () => (
+  <DialogOverlay className="bg-background/40 backdrop-blur-md" />
+);
 const PENDING_PROMPT_KEY = 'pendingAgentPrompt';
 
 export function HeroSection() {
@@ -24,6 +30,9 @@ export function HeroSection() {
   const router = useRouter();
   const initiateAgentMutation = useInitiateAgentMutation();
   const threadQuery = useThreadQuery(initiatedThreadId || '');
+
+  const [authError, setAuthError] = useState<string | null>(null);
+
 
   useEffect(() => {
     if (authDialogOpen && user && !isLoading) {
@@ -80,6 +89,30 @@ export function HeroSection() {
     createAgentWithPrompt();
   };
 
+  // Handle auth form submission
+  const handleSignIn = async (prevState: any, formData: FormData) => {
+    setAuthError(null);
+    try {
+      // Implement sign in logic here
+      const email = formData.get('email') as string;
+      const password = formData.get('password') as string;
+
+      // Add the returnUrl to the form data for proper redirection
+      formData.append('returnUrl', '/dashboard');
+
+      // Call your authentication function here
+
+      // Return any error state
+      return { message: 'Invalid credentials' };
+    } catch (error) {
+      console.error('Sign in error:', error);
+      setAuthError(
+        error instanceof Error ? error.message : 'An error occurred',
+      );
+      return { message: 'An error occurred during sign in' };
+    }
+  };
+
   return (
     <section
       id="hero"
@@ -108,7 +141,7 @@ export function HeroSection() {
         onSubmit={handleSubmit}
         className="z-10 w-full max-w-3xl px-4 relative group"
       >
-        <div className="flex items-center justify-between bg-black/70 border border-white/10 rounded-3xl px-6 py-8 shadow-xl backdrop-blur-sm transition-all duration-300">
+        <div className="flex items-center justify-between bg-black/30 border border-white/10 rounded-3xl px-6 py-8 shadow-xl backdrop-blur-2xl transition-all duration-300">
           <input
             type="text"
             value={inputValue}
@@ -128,11 +161,6 @@ export function HeroSection() {
         </div>
       </form>
 
-      {/* Subtext */}
-      <p className="mt-10 text-white/80 text-sm text-center max-w-md z-10">
-        NexI is your truth-seeking AI companion for unfiltered answers with advanced capabilities in reasoning, coding, and processing.
-      </p>
-
       {/* Buttons */}
       <div className="flex gap-4 mt-6 z-10">
         <Link
@@ -151,15 +179,112 @@ export function HeroSection() {
 
       {/* Auth Dialog */}
       <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
-        <DialogContent className="bg-[#111] text-white border border-white/10 rounded-xl">
+        <BlurredDialogOverlay />
+        <DialogContent className="sm:max-w-md rounded-xl bg-[#F3F4F6] dark:bg-[#F9FAFB]/[0.02] border border-border">
           <DialogHeader>
-            <DialogTitle className="text-xl">Sign in to continue</DialogTitle>
+            <div className="flex items-center justify-between">
+              <DialogTitle className="text-xl font-medium">
+                Sign in to continue
+              </DialogTitle>
+              {/* <button 
+                onClick={() => setAuthDialogOpen(false)}
+                className="rounded-full p-1 hover:bg-muted transition-colors"
+              >
+                <X className="h-4 w-4 text-muted-foreground" />
+              </button> */}
+            </div>
+            <DialogDescription className="text-muted-foreground">
+              Sign in or create an account to talk with Suna
+            </DialogDescription>
           </DialogHeader>
-          <GoogleSignIn returnUrl="/dashboard" />
-          <div className="mt-4 text-sm text-center text-white/60">
+
+          {/* Auth error message */}
+          {authError && (
+            <div className="mb-4 p-3 rounded-lg flex items-center gap-3 bg-secondary/10 border border-secondary/20 text-secondary">
+              <AlertCircle className="h-5 w-5 flex-shrink-0 text-secondary" />
+              <span className="text-sm font-medium">{authError}</span>
+            </div>
+          )}
+
+          {/* Google Sign In */}
+          <div className="w-full">
+            <GoogleSignIn returnUrl="/dashboard" />
+          </div>
+
+          {/* Divider */}
+          <div className="relative my-6">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-border"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-[#F3F4F6] dark:bg-[#F9FAFB]/[0.02] text-muted-foreground">
+                or continue with email
+              </span>
+            </div>
+          </div>
+
+          {/* Sign in form */}
+          <form className="space-y-4">
+            <div>
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                placeholder="Email address"
+                className="h-12 rounded-full bg-background border-border"
+                required
+              />
+            </div>
+
+            <div>
+              <Input
+                id="password"
+                name="password"
+                type="password"
+                placeholder="Password"
+                className="h-12 rounded-full bg-background border-border"
+                required
+              />
+            </div>
+
+            <div className="space-y-4 pt-4">
+              <SubmitButton
+                formAction={handleSignIn}
+                className="w-full h-12 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md"
+                pendingText="Signing in..."
+              >
+                Sign in
+              </SubmitButton>
+
+              <Link
+                href={`/auth?mode=signup&returnUrl=${encodeURIComponent('/dashboard')}`}
+                className="flex h-12 items-center justify-center w-full text-center rounded-full border border-border bg-background hover:bg-accent/20 transition-all"
+                onClick={() => setAuthDialogOpen(false)}
+              >
+                Create new account
+              </Link>
+            </div>
+
+            <div className="text-center pt-2">
+              <Link
+                href={`/auth?returnUrl=${encodeURIComponent('/dashboard')}`}
+                className="text-sm text-primary hover:underline"
+                onClick={() => setAuthDialogOpen(false)}
+              >
+                More sign in options
+              </Link>
+            </div>
+          </form>
+
+          <div className="mt-4 text-center text-xs text-muted-foreground">
             By continuing, you agree to our{' '}
-            <Link href="/terms" className="text-white underline">Terms</Link> and{' '}
-            <Link href="/privacy" className="text-white underline">Privacy Policy</Link>
+            <Link href="/terms" className="text-primary hover:underline">
+              Terms of Service
+            </Link>{' '}
+            and{' '}
+            <Link href="/privacy" className="text-primary hover:underline">
+              Privacy Policy
+            </Link>
           </div>
         </DialogContent>
       </Dialog>

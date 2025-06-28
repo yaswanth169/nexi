@@ -2,8 +2,6 @@
 
 import { SectionHeader } from '@/components/home/section-header';
 import { siteConfig } from '@/lib/home';
-import { cn } from '@/lib/utils';
-import { motion } from 'motion/react';
 import { ArrowRight } from 'lucide-react';
 
 interface UseCase {
@@ -18,91 +16,93 @@ interface UseCase {
 }
 
 export function UseCasesSection() {
-  // Get featured use cases from siteConfig and limit to 8
   const featuredUseCases: UseCase[] = (siteConfig.useCases || []).filter(
     (useCase: UseCase) => useCase.featured,
   );
 
   return (
-    <section
-      id="use-cases"
-      className="flex flex-col items-center justify-center gap-10 pb-10 w-full relative"
-    >
-      <SectionHeader>
-        <h2 className="text-3xl md:text-4xl font-medium tracking-tighter text-center text-balance">
-          See NexI in action
-        </h2>
-        <p className="text-muted-foreground text-center text-balance font-medium">
-          Explore real-world examples of how NexI completes complex tasks
-          autonomously
-        </p>
-      </SectionHeader>
+    <section id="use-cases" className="relative w-full text-white py-16 overflow-hidden bg-grid">
+      <div className="relative z-20 max-w-7xl mx-auto px-6">
+        <SectionHeader>
+          <h2 className="text-4xl sm:text-5xl font-bold text-center bg-gradient-to-r from-white via-[#a18fff] to-white bg-clip-text text-transparent">
+            See NexI in action
+          </h2>
+          <p className="text-muted-foreground text-center text-balance font-medium max-w-2xl mx-auto mt-4">
+            Explore real-world examples of how NexI completes complex tasks autonomously
+          </p>
+        </SectionHeader>
 
-      <div className="relative w-full h-full px-6 max-w-6xl mx-auto">
-        <div className="columns-1 sm:columns-2 lg:columns-3 gap-6 space-y-6">
-          {featuredUseCases.map((useCase: UseCase) => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 mt-16">
+          {featuredUseCases.map((useCase) => (
             <div
               key={useCase.id}
-              className="break-inside-avoid bg-accent rounded-2xl overflow-hidden shadow-lg transition-transform hover:-translate-y-1.5 hover:shadow-xl"
+              className="group relative rounded-2xl overflow-hidden border border-neutral-800 bg-black/40 backdrop-blur-md shadow-[0_0_12px_#00000033] hover:shadow-[0_0_24px_#a18fff55] hover:border-[#a18fff] transition-all"
             >
-              <div className="flex flex-col gap-4 p-4">
+              {/* Image Top */}
+              <div className="relative rounded-t-xl overflow-hidden border-b border-white/5 shadow-inner">
+                <img
+                  src={
+                    useCase.image ||
+                    `https://placehold.co/800x400/f5f5f5/666666?text=NexI+${useCase.title.split(' ').join('+')}`
+                  }
+                  alt={`NexI ${useCase.title}`}
+                  className="w-full h-[180px] object-cover"
+                />
+                <a
+                  href={useCase.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-start p-4"
+                >
+                  <span className="flex items-center gap-2 text-sm text-white font-medium">
+                    Watch replay
+                    <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
+                  </span>
+                </a>
+              </div>
+
+              {/* Card Content */}
+              <div className="flex flex-col gap-4 p-5">
                 <div className="flex items-center gap-3">
-                  <div className="rounded-full bg-secondary/10 p-2">
+                  <div className="rounded-full border border-[#a18fff33] bg-[#a18fff11] p-2">
                     <svg
                       width="20"
                       height="20"
                       viewBox="0 0 24 24"
                       fill="none"
                       xmlns="http://www.w3.org/2000/svg"
-                      className="text-secondary"
+                      className="text-[#a18fff]"
                     >
                       {useCase.icon}
                     </svg>
                   </div>
-                  <h3 className="text-lg font-semibold truncate">{useCase.title}</h3>
+                  <h3 className="text-lg font-semibold text-white group-hover:text-[#a18fff] transition truncate">
+                    {useCase.title}
+                  </h3>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
+
+                <p className="text-sm text-neutral-400 leading-relaxed">
                   {useCase.description}
                 </p>
-              </div>
-
-              <div className="mt-auto">
-                <hr className="border-border dark:border-white/20 m-0" />
-                <div className="relative w-full h-[180px] bg-accent/10">
-                  <img
-                    src={
-                      useCase.image ||
-                      `https://placehold.co/800x400/f5f5f5/666666?text=NexI+${useCase.title
-                        .split(' ')
-                        .join('+')}`
-                    }
-                    alt={`NexI ${useCase.title}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <a
-                    href={useCase.url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity flex items-end justify-start p-4 group"
-                  >
-                    <span className="flex items-center gap-2 text-sm text-white font-medium">
-                      Watch replay
-                      <ArrowRight className="size-4 group-hover:translate-x-1 transition-transform" />
-                    </span>
-                  </a>
-                </div>
               </div>
             </div>
           ))}
         </div>
 
         {featuredUseCases.length === 0 && (
-          <div className="flex flex-col items-center justify-center py-16 text-center">
+          <div className="flex flex-col items-center justify-center text-center">
             <p className="text-muted-foreground">No use cases available yet.</p>
           </div>
         )}
       </div>
 
+      {/* Optional purple grid background */}
+      <style jsx>{`
+        .bg-grid {
+          background-image: radial-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+          background-size: 30px 30px;
+        }
+      `}</style>
     </section>
   );
 }

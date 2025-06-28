@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { FooterSection } from '@/components/home/sections/footer-section';
 import { HeroSection } from '@/components/home/sections/hero-section';
 import { UseCasesSection } from '@/components/home/sections/use-cases-section';
@@ -15,8 +14,8 @@ export default function Home() {
       <main className="flex flex-col items-center justify-center min-h-screen w-full">
         <div className="w-full divide-y">
           <HeroSection />
-          <UseCasesSection />
           <CapabilitiesSection/>
+          <UseCasesSection />
           <UpcomingSection/>
           <FooterSection />
         </div>
