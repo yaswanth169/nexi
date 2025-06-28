@@ -81,10 +81,15 @@ export function HeroSection() {
   };
 
   return (
-    <section id="hero" className="relative flex flex-col justify-center items-center min-h-screen px-4 text-white overflow-hidden">
+    <section
+      id="hero"
+      className="relative flex flex-col justify-center items-center min-h-screen px-4 text-white overflow-hidden"
+    >
+
+      {/* NexI Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <h1
-          className="text-[40vw] font-extrabold text-transparent select-none leading-none stroke-text opacity-0 translate-y-6 animate-[fadeUp_0.8s_ease-out_forwards]"
+          className="text-[40vw] font-extrabold text-transparent select-none leading-none stroke-text opacity-0 translate-y-6 animate-[fadeUp_0.8s_ease-out_forwards] bg-gradient-to-r from-white/10 via-white/20 to-white/5 bg-clip-text"
           style={{
             WebkitMaskImage:
               'linear-gradient(to top, transparent 0%, rgba(0,0,0,0.3) 20%, black 60%)',
@@ -98,6 +103,7 @@ export function HeroSection() {
         </h1>
       </div>
 
+      {/* Input + Buttons */}
       <form
         onSubmit={handleSubmit}
         className="z-10 w-full max-w-3xl px-4 relative group"
@@ -122,10 +128,12 @@ export function HeroSection() {
         </div>
       </form>
 
-      <p className="mt-10 text-white/80 text-sm text-center max-w-md">
+      {/* Subtext */}
+      <p className="mt-10 text-white/80 text-sm text-center max-w-md z-10">
         NexI is your truth-seeking AI companion for unfiltered answers with advanced capabilities in reasoning, coding, and processing.
       </p>
 
+      {/* Buttons */}
       <div className="flex gap-4 mt-6 z-10">
         <Link
           href="/dashboard"
@@ -141,6 +149,7 @@ export function HeroSection() {
         </Link>
       </div>
 
+      {/* Auth Dialog */}
       <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
         <DialogContent className="bg-[#111] text-white border border-white/10 rounded-xl">
           <DialogHeader>
@@ -155,6 +164,7 @@ export function HeroSection() {
         </DialogContent>
       </Dialog>
 
+      {/* Fade-up Text Animation */}
       <style jsx>{`
         .stroke-text {
           -webkit-text-stroke: 2px rgba(255, 255, 255, 0.2);
