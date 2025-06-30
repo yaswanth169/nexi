@@ -74,7 +74,7 @@ export default function GlowInput({ inputValue, setInputValue, isSubmitting, han
     return (
         <div ref={glowRef} className="glow-wrapper relative w-full max-w-3xl px-4 z-10">
             <div className="glow-border relative rounded-3xl p-[2px] transition-all duration-300">
-                <form className="flex items-center justify-between bg-black/30 border border-white/10 rounded-3xl px-6 py-8 shadow-xl backdrop-blur-2xl" onSubmit={handleSubmit}>
+                <form className="flex items-center justify-between bg-black/50 border border-white/10 rounded-3xl px-6 py-5 shadow-xl backdrop-blur-md" onSubmit={handleSubmit}>
                     <input
                         type="text"
                         value={inputValue}
@@ -85,12 +85,14 @@ export default function GlowInput({ inputValue, setInputValue, isSubmitting, han
                     />
                     <button
                         type="submit"
-                        className="ml-4 p-2 bg-white text-black rounded-full hover:scale-105 transition-transform"
                         disabled={!inputValue.trim() || isSubmitting}
                         aria-label="Submit"
+                        className="cursor-pointer bg-gradient-to-r from-purple-600 to-purple-500 h-14 hidden md:flex items-center justify-center text-sm font-normal tracking-wide rounded-full text-white w-fit px-6 shadow-[inset_0_1px_2px_rgba(255,255,255,0.15),0_3px_3px_-1.5px_rgba(128,90,213,0.2),0_1px_1px_rgba(128,90,213,0.3)] border border-purple-500/30"
                     >
-                        <ArrowUp className="h-5 w-5" />
+                        <ArrowUp className="h-4 w-4 group-hover:translate-y-[-1px] transition-transform" />
+                        ASK
                     </button>
+
                 </form>
             </div>
         </div>
