@@ -1,11 +1,11 @@
 export const siteConfig = {
   name: 'NexI',
-  url: 'https://NexI.so/',
+  url: 'https://www.nexi.net.in/',
   description: 'AI',
   links: {
-    twitter: 'https://x.com/nexi',
-    github: 'https://github.com/nexi-ai/',
-    linkedin: 'https://www.linkedin.com/company/kortix/',
+    twitter: 'https://www.nexi.net.in/',
+    github: 'https://www.nexi.net.in/',
+    linkedin: 'https://www.nexi.net.in/',
   },
 };
 
