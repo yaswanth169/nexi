@@ -104,7 +104,7 @@ export default function UpcomingSection() {
               <div className="relative w-full p-4 h-70 overflow-hidden rounded-xl border border-neutral-800 bg-black">
                 <div className="flex items-center gap-2 text-white text-base font-medium mb-2 z-10 relative">
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Thinking for {thinkingTime} second{thinkingTime !== 1 ? "s" : ""}...
+                  Summarizing in {thinkingTime} second{thinkingTime !== 1 ? "s" : ""}...
                 </div>
 
                 {/* Scrolling background text */}
