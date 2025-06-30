@@ -783,3 +783,36 @@
   animation: intenseShineSweep 3s ease-in-out infinite;
   pointer-events: none;
 }
+.glow-wrapper {
+  --x: 50%;
+  --y: 50%;
+}
+
+.glow-border::before {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  inset: 0;
+  border-radius: inherit;
+  padding: 2px;
+  background: radial-gradient(
+    400px circle at var(--x) var(--y),
+    #a855f7,
+    #ff00e5,
+    #5b2eff,
+    #00f0ff,
+    transparent 70%
+  );
+  filter: brightness(1.4) saturate(1.8);
+  mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  mask-composite: exclude;
+  -webkit-mask-composite: destination-out;
+  pointer-events: none;
+  transition: background 0.5s ease;
+  backdrop-filter: blur(12px);
+  box-shadow:
+    0 0 10px #a855f7,
+    0 0 20px #5b2eff,
+    0 0 30px #ff00e5;
+}

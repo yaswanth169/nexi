@@ -79,7 +79,7 @@ export function MaintenancePage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-br text-white">
-      <div className="w-full max-w-2xl space-y-8 bg-[#0e0e0e] border border-neutral-800 shadow-xl p-8 rounded-3xl  glow-inset-strong">
+      <div className="w-full max-w-3xl space-y-8 bg-[#0e0e0e] border border-neutral-800 shadow-xl p-8 rounded-3xl  glow-inset-strong">
         {/* Header */}
         <div className="text-center">
           <div className="flex justify-center mb-4">
@@ -138,6 +138,24 @@ export function MaintenancePage() {
           )}
         </div>
 
+        {/* Retry Button */}
+        <div className="space-y-2 text-center">
+          <Button
+            onClick={checkHealth}
+            disabled={activeStep !== -1 && finalState === null}
+            className="w-1/2 bg-purple-600 hover:bg-purple-700 transition-colors text-white cursor-pointer"
+          >
+            <RefreshCw
+              className={cn('h-4 w-4 mr-2', finalState === null && activeStep !== -1 && 'animate-spin')}
+            />
+            {finalState === null && activeStep !== -1 ? 'Checking...' : 'Check Again'}
+          </Button>
+          {lastChecked && (
+            <p className="text-xs text-neutral-500 text-center mt-5">
+              Last checked: {lastChecked.toLocaleTimeString()}
+            </p>
+          )}
+        </div>
         {/* Alert Box */}
         <Alert className="bg-yellow-900/20 border border-yellow-800 text-yellow-300">
           <AlertTitle className="flex items-center gap-2">
@@ -146,29 +164,10 @@ export function MaintenancePage() {
           </AlertTitle>
           <AlertDescription>
             {isLocalMode()
-              ? 'Start your backend server to resume executions.'
+              ? 'Start your backend server to resume executions or contact @Nexi support'
               : 'Agents were halted during maintenance. Resume once system is back.'}
           </AlertDescription>
         </Alert>
-
-        {/* Retry Button */}
-        <div className="space-y-2">
-          <Button
-            onClick={checkHealth}
-            disabled={activeStep !== -1 && finalState === null}
-            className="w-full bg-purple-600 hover:bg-purple-700 transition-colors"
-          >
-            <RefreshCw
-              className={cn('h-4 w-4 mr-2', finalState === null && activeStep !== -1 && 'animate-spin')}
-            />
-            {finalState === null && activeStep !== -1 ? 'Checking...' : 'Check Again'}
-          </Button>
-          {lastChecked && (
-            <p className="text-xs text-neutral-500 text-center">
-              Last checked: {lastChecked.toLocaleTimeString()}
-            </p>
-          )}
-        </div>
       </div>
     </div>
   );

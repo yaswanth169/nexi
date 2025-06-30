@@ -19,6 +19,7 @@ import { siteConfig } from '@/lib/home';
 import { SubmitButton } from '@/components/ui/submit-button';
 import { Input } from '@/components/ui/input';
 import { signIn } from '@/app/auth/actions';
+import InputWithGlow from '../ui/input-glow';
 
 const PENDING_PROMPT_KEY = 'pendingAgentPrompt';
 
@@ -128,30 +129,7 @@ export function HeroSection() {
         </h1>
       </div>
 
-      {/* Search Input */}
-      <form
-        onSubmit={handleSubmit}
-        className="z-10 w-full max-w-3xl px-4 relative group"
-      >
-        <div className="flex items-center justify-between bg-black/30 border border-white/10 rounded-3xl px-6 py-8 shadow-xl backdrop-blur-2xl transition-all duration-300">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="What do you want to know?"
-            className="flex-1 bg-transparent text-white placeholder-white/50 text-lg md:text-xl outline-none"
-            disabled={isSubmitting}
-          />
-          <button
-            type="submit"
-            className="ml-4 p-2 bg-white text-black rounded-full hover:scale-105 transition-transform"
-            disabled={!inputValue.trim() || isSubmitting}
-            aria-label="Submit"
-          >
-            <ArrowUp className="h-5 w-5" />
-          </button>
-        </div>
-      </form>
+      <InputWithGlow inputValue={inputValue} setInputValue={setInputValue} isSubmitting={isSubmitting} handleSubmit={handleSubmit} />
 
       {/* CTA Buttons */}
       <div className="flex gap-4 mt-6 z-10">
