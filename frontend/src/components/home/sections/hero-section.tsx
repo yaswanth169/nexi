@@ -4,7 +4,13 @@ import { useEffect, useState, FormEvent } from 'react';
 import { ArrowUp, AlertCircle } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogOverlay } from '@/components/ui/dialog';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import GoogleSignIn from '@/components/GoogleSignIn';
 import { useAuth } from '@/components/AuthProvider';
 import { useInitiateAgentMutation } from '@/hooks/react-query/dashboard/use-initiate-agent';
@@ -12,11 +18,9 @@ import { useThreadQuery } from '@/hooks/react-query/threads/use-threads';
 import { siteConfig } from '@/lib/home';
 import { SubmitButton } from '@/components/ui/submit-button';
 import { Input } from '@/components/ui/input';
+import { signIn } from '@/app/auth/actions';
+import InputWithGlow from '../ui/input-glow';
 
-// Custom dialog overlay with blur effect
-const BlurredDialogOverlay = () => (
-  <DialogOverlay className="bg-background/40 backdrop-blur-md" />
-);
 const PENDING_PROMPT_KEY = 'pendingAgentPrompt';
 
 export function HeroSection() {
@@ -26,13 +30,11 @@ export function HeroSection() {
   const [authDialogOpen, setAuthDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [initiatedThreadId, setInitiatedThreadId] = useState<string | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
 
   const router = useRouter();
   const initiateAgentMutation = useInitiateAgentMutation();
   const threadQuery = useThreadQuery(initiatedThreadId || '');
-
-  const [authError, setAuthError] = useState<string | null>(null);
-
 
   useEffect(() => {
     if (authDialogOpen && user && !isLoading) {
@@ -66,10 +68,9 @@ export function HeroSection() {
       formData.append('enable_context_manager', 'false');
 
       const result = await initiateAgentMutation.mutateAsync(formData);
-
       setInitiatedThreadId(result.thread_id);
       setInputValue('');
-    } catch (error: any) {
+    } catch (error) {
       console.error(error);
     } finally {
       setIsSubmitting(false);
@@ -89,26 +90,21 @@ export function HeroSection() {
     createAgentWithPrompt();
   };
 
-  // Handle auth form submission
-  const handleSignIn = async (prevState: any, formData: FormData) => {
+  const handleSignIn = async (_prevState: any, formData: FormData) => {
     setAuthError(null);
     try {
-      // Implement sign in logic here
-      const email = formData.get('email') as string;
-      const password = formData.get('password') as string;
-
-      // Add the returnUrl to the form data for proper redirection
       formData.append('returnUrl', '/dashboard');
+      const result = await signIn(undefined, formData);
 
-      // Call your authentication function here
-
-      // Return any error state
-      return { message: 'Invalid credentials' };
+      if ('message' in result) {
+        setAuthError(result.message);
+        return { message: result.message };
+      } else {
+        router.push('/dashboard');
+      }
     } catch (error) {
       console.error('Sign in error:', error);
-      setAuthError(
-        error instanceof Error ? error.message : 'An error occurred',
-      );
+      setAuthError('An error occurred during sign in');
       return { message: 'An error occurred during sign in' };
     }
   };
@@ -118,16 +114,13 @@ export function HeroSection() {
       id="hero"
       className="relative flex flex-col justify-center items-center min-h-screen px-4 text-white overflow-hidden"
     >
-
-      {/* NexI Text */}
+      {/* NexI Animated Text */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <h1
           className="text-[40vw] font-extrabold text-transparent select-none leading-none stroke-text opacity-0 translate-y-6 animate-[fadeUp_0.8s_ease-out_forwards] bg-gradient-to-r from-white/10 via-white/20 to-white/5 bg-clip-text"
           style={{
-            WebkitMaskImage:
-              'linear-gradient(to top, transparent 0%, rgba(0,0,0,0.3) 20%, black 60%)',
-            maskImage:
-              'linear-gradient(to top, transparent 0%, rgba(0,0,0,0.3) 20%, black 60%)',
+            WebkitMaskImage: 'linear-gradient(to top, transparent 0%, rgba(0,0,0,0.3) 20%, black 60%)',
+            maskImage: 'linear-gradient(to top, transparent 0%, rgba(0,0,0,0.3) 20%, black 60%)',
             WebkitMaskSize: '100% 100%',
             WebkitMaskRepeat: 'no-repeat',
           }}
@@ -136,32 +129,9 @@ export function HeroSection() {
         </h1>
       </div>
 
-      {/* Input + Buttons */}
-      <form
-        onSubmit={handleSubmit}
-        className="z-10 w-full max-w-3xl px-4 relative group"
-      >
-        <div className="flex items-center justify-between bg-black/30 border border-white/10 rounded-3xl px-6 py-8 shadow-xl backdrop-blur-2xl transition-all duration-300">
-          <input
-            type="text"
-            value={inputValue}
-            onChange={(e) => setInputValue(e.target.value)}
-            placeholder="What do you want to know?"
-            className="flex-1 bg-transparent text-white placeholder-white/50 text-lg md:text-xl outline-none"
-            disabled={isSubmitting}
-          />
-          <button
-            type="submit"
-            className="ml-4 p-2 bg-white text-black rounded-full hover:scale-105 transition-transform"
-            disabled={!inputValue.trim() || isSubmitting}
-            aria-label="Submit"
-          >
-            <ArrowUp className="h-5 w-5" />
-          </button>
-        </div>
-      </form>
+      <InputWithGlow inputValue={inputValue} setInputValue={setInputValue} isSubmitting={isSubmitting} handleSubmit={handleSubmit} />
 
-      {/* Buttons */}
+      {/* CTA Buttons */}
       <div className="flex gap-4 mt-6 z-10">
         <Link
           href="/dashboard"
@@ -177,119 +147,87 @@ export function HeroSection() {
         </Link>
       </div>
 
-      {/* Auth Dialog */}
+      {/* Sign-in Dialog */}
       <Dialog open={authDialogOpen} onOpenChange={setAuthDialogOpen}>
-        <BlurredDialogOverlay />
-        <DialogContent className="sm:max-w-md rounded-xl bg-[#F3F4F6] dark:bg-[#F9FAFB]/[0.02] border border-border">
-          <DialogHeader>
-            <div className="flex items-center justify-between">
-              <DialogTitle className="text-xl font-medium">
-                Sign in to continue
-              </DialogTitle>
-              {/* <button 
-                onClick={() => setAuthDialogOpen(false)}
-                className="rounded-full p-1 hover:bg-muted transition-colors"
-              >
-                <X className="h-4 w-4 text-muted-foreground" />
-              </button> */}
-            </div>
-            <DialogDescription className="text-muted-foreground">
-              Sign in or create an account to talk with Nexi
+        <DialogContent className="sm:max-w-md rounded-2xl shadow-2xl border border-border bg-background/90 backdrop-blur-md">
+          <DialogHeader className="space-y-1.5 pb-2">
+            <DialogTitle className="text-xl font-semibold tracking-tight">Sign in to continue</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground">
+              Sign in or create an account to chat with NexI
             </DialogDescription>
           </DialogHeader>
 
-          {/* Auth error message */}
           {authError && (
-            <div className="mb-4 p-3 rounded-lg flex items-center gap-3 bg-secondary/10 border border-secondary/20 text-secondary">
-              <AlertCircle className="h-5 w-5 flex-shrink-0 text-secondary" />
-              <span className="text-sm font-medium">{authError}</span>
+            <div className="flex items-center gap-2 p-3 bg-destructive/10 border border-destructive/30 text-destructive text-sm rounded-lg">
+              <AlertCircle className="w-4 h-4" />
+              {authError}
             </div>
           )}
 
-          {/* Google Sign In */}
-          <div className="w-full">
-            <GoogleSignIn returnUrl="/dashboard" />
-          </div>
+          <GoogleSignIn returnUrl="/dashboard" />
 
-          {/* Divider */}
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-border"></div>
+              <div className="w-full border-t border-border" />
             </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-[#F3F4F6] dark:bg-[#F9FAFB]/[0.02] text-muted-foreground">
-                or continue with email
-              </span>
+            <div className="relative flex justify-center text-sm text-muted-foreground">
+              <span className="bg-background px-2">or continue with email</span>
             </div>
           </div>
 
-          {/* Sign in form */}
           <form className="space-y-4">
-            <div>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Email address"
-                className="h-12 rounded-full bg-background border-border"
-                required
-              />
-            </div>
-
-            <div>
-              <Input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Password"
-                className="h-12 rounded-full bg-background border-border"
-                required
-              />
-            </div>
-
-            <div className="space-y-4 pt-4">
+            <Input
+              name="email"
+              type="email"
+              placeholder="Email address"
+              className="h-11 rounded-xl bg-muted/30 border-border focus:ring-2 focus:ring-primary/30"
+              required
+            />
+            <Input
+              name="password"
+              type="password"
+              placeholder="Password"
+              className="h-11 rounded-xl bg-muted/30 border-border focus:ring-2 focus:ring-primary/30"
+              required
+            />
+            <div className="space-y-3 pt-2">
               <SubmitButton
                 formAction={handleSignIn}
-                className="w-full h-12 rounded-full bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md"
+                className="w-full h-11 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all shadow-md"
                 pendingText="Signing in..."
               >
                 Sign in
               </SubmitButton>
 
               <Link
-                href={`/auth?mode=signup&returnUrl=${encodeURIComponent('/dashboard')}`}
-                className="flex h-12 items-center justify-center w-full text-center rounded-full border border-border bg-background hover:bg-accent/20 transition-all"
+                href="/auth?mode=signup&returnUrl=/dashboard"
                 onClick={() => setAuthDialogOpen(false)}
+                className="flex items-center justify-center w-full h-11 rounded-xl border border-border bg-muted/20 hover:bg-muted/30 transition-all text-sm font-medium"
               >
                 Create new account
               </Link>
             </div>
 
-            <div className="text-center pt-2">
+            <div className="text-center pt-3">
               <Link
-                href={`/auth?returnUrl=${encodeURIComponent('/dashboard')}`}
-                className="text-sm text-primary hover:underline"
+                href="/auth?returnUrl=/dashboard"
                 onClick={() => setAuthDialogOpen(false)}
+                className="text-sm text-primary hover:underline"
               >
-                More sign in options
+                More sign-in options
               </Link>
             </div>
           </form>
 
-          <div className="mt-4 text-center text-xs text-muted-foreground">
+          <div className="mt-6 text-center text-xs text-muted-foreground">
             By continuing, you agree to our{' '}
-            <Link href="/terms" className="text-primary hover:underline">
-              Terms of Service
-            </Link>{' '}
-            and{' '}
-            <Link href="/privacy" className="text-primary hover:underline">
-              Privacy Policy
-            </Link>
+            <Link href="/terms" className="text-primary hover:underline">Terms of Service</Link> and{' '}
+            <Link href="/privacy" className="text-primary hover:underline">Privacy Policy</Link>.
           </div>
         </DialogContent>
       </Dialog>
 
-      {/* Fade-up Text Animation */}
+      {/* Keyframes & Styling */}
       <style jsx>{`
         .stroke-text {
           -webkit-text-stroke: 2px rgba(255, 255, 255, 0.2);
