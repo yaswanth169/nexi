@@ -167,14 +167,14 @@ export const MessageInput = forwardRef<HTMLTextAreaElement, MessageInputProps>(
           }
           <div className='flex items-center gap-2'>
             {/* TODO 1.1: Uncomment this for model selection in UI */}
-            {/* <ModelSelector
+            <ModelSelector
               selectedModel={selectedModel}
               onModelChange={onModelChange}
               modelOptions={modelOptions}
               subscriptionStatus={subscriptionStatus}
               canAccessModel={canAccessModel}
               refreshCustomModels={refreshCustomModels}
-            /> */}
+            />
             <Button
               type="submit"
               onClick={isAgentRunning && onStopAgent ? onStopAgent : onSubmit}
