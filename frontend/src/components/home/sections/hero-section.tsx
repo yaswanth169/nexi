@@ -61,7 +61,7 @@ export function HeroSection() {
     try {
       const formData = new FormData();
       formData.append('prompt', inputValue.trim());
-      formData.append('model_name', 'openrouter/deepseek/deepseek-chat');
+      formData.append('model_name', 'gpt-4o');
       formData.append('enable_thinking', 'false');
       formData.append('reasoning_effort', 'low');
       formData.append('stream', 'true');
