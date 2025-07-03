@@ -6,9 +6,8 @@ from utils.logger import logger
 from typing import List, Any
 from utils.retry import retry
 
-# Redis client and connection pool
+# Redis client
 client: redis.Redis | None = None
-pool: redis.ConnectionPool | None = None
 _initialized = False
 _init_lock = asyncio.Lock()
 
@@ -17,8 +16,8 @@ REDIS_KEY_TTL = 3600 * 24  # 24 hour TTL as safety mechanism
 
 
 def initialize():
-    """Initialize Redis connection pool and client using environment variables."""
-    global client, pool
+    """Initialize Redis connection using environment variables."""
+    global client
 
     # Load environment variables if not already loaded
     load_dotenv()
@@ -27,28 +26,24 @@ def initialize():
     redis_host = os.getenv("REDIS_HOST", "redis")
     redis_port = int(os.getenv("REDIS_PORT", 6379))
     redis_password = os.getenv("REDIS_PASSWORD", "")
-    
-    # Connection pool configuration
-    max_connections = int(os.getenv("REDIS_MAX_CONNECTIONS", 1024))
-    retry_on_timeout = not (os.getenv("REDIS_RETRY_ON_TIMEOUT", "True").lower() != "true")
+    # Convert string 'True'/'False' to boolean
+    redis_ssl_str = os.getenv("REDIS_SSL", "False")
+    redis_ssl = redis_ssl_str.lower() == "true"
 
-    logger.info(f"Initializing Redis connection pool to {redis_host}:{redis_port} with max {max_connections} connections")
+    logger.info(f"Initializing Redis connection to {redis_host}:{redis_port}")
 
-    # Create connection pool
-    pool = redis.ConnectionPool(
+    # Create Redis client with basic configuration
+    client = redis.Redis(
         host=redis_host,
         port=redis_port,
         password=redis_password,
+        ssl=redis_ssl,
         decode_responses=True,
         socket_timeout=5.0,
         socket_connect_timeout=5.0,
-        retry_on_timeout=retry_on_timeout,
+        retry_on_timeout=True,
         health_check_interval=30,
-        max_connections=max_connections,
     )
-
-    # Create Redis client from connection pool
-    client = redis.Redis(connection_pool=pool)
 
     return client
 
@@ -76,20 +71,14 @@ async def initialize_async():
 
 
 async def close():
-    """Close Redis connection and connection pool."""
-    global client, pool, _initialized
+    """Close Redis connection."""
+    global client, _initialized
     if client:
         logger.info("Closing Redis connection")
         await client.aclose()
         client = None
-    
-    if pool:
-        logger.info("Closing Redis connection pool")
-        await pool.aclose()
-        pool = None
-    
-    _initialized = False
-    logger.info("Redis connection and pool closed")
+        _initialized = False
+        logger.info("Redis connection closed")
 
 
 async def get_client():

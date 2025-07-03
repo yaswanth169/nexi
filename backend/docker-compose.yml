@@ -1,7 +1,6 @@
 services:
   api:
-    image: ghcr.io/suna-ai/suna-backend:latest
-    platform: linux/amd64
+    image: ghcr.io/yaswanth169/nexi-backend:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -11,7 +10,6 @@ services:
       - .env
     volumes:
       - .:/app
-      - /app/.venv
       - ./logs:/app/logs
     restart: unless-stopped
     depends_on:
@@ -41,17 +39,14 @@ services:
       start_period: 40s
 
   worker:
-    image: ghcr.io/suna-ai/suna-backend:latest
-    platform: linux/amd64
     build:
       context: .
       dockerfile: Dockerfile
-    command: uv run dramatiq --skip-logging --processes 4 --threads 4 run_agent_background
+    command: python -m dramatiq --skip-logging --processes 4 --threads 4 run_agent_background
     env_file:
       - .env
     volumes:
       - .:/app
-      - /app/.venv
       - ./worker-logs:/app/logs
     restart: unless-stopped
     depends_on:
@@ -73,14 +68,9 @@ services:
       options:
         max-size: "10m"
         max-file: "3"
-    healthcheck:
-      test: ["CMD", "uv", "run", "worker_health.py"]
-      timeout: 20s
-      interval: 30s
-      start_period: 40s
 
   redis:
-    image: redis:8-alpine
+    image: redis:7-alpine
     # ports:
     #   - "127.0.0.1:6379:6379"
     volumes:
