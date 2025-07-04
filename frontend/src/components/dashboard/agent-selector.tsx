@@ -78,7 +78,7 @@ export function AgentSelector({
     if (variant === 'heading') {
       return (
         <div className={cn("flex items-center", className)}>
-          <span className="tracking-tight text-4xl font-semibold leading-tight text-primary">
+          <span className="tracking-tight text-6xl font-semibold leading-tight text-primary">
             NexI
           </span>
         </div>
@@ -90,7 +90,7 @@ export function AgentSelector({
     if (variant === 'heading') {
       return (
         <div className={cn("flex items-center", className)}>
-          <span className="tracking-tight text-4xl font-semibold leading-tight text-muted-foreground">
+          <span className="tracking-tight text-6xl font-semibold leading-tight text-muted-foreground">
             Loading...
           </span>
         </div>
@@ -117,7 +117,7 @@ export function AgentSelector({
                 variant="ghost"
                 className="flex items-center gap-1 px-2 py-1 h-auto hover:bg-transparent hover:text-primary transition-colors group"
               >
-                <span className="underline decoration-dashed underline-offset-6 decoration-muted-foreground/50 tracking-tight text-4xl font-semibold leading-tight text-primary">
+                <span className="underline decoration-dashed underline-offset-6 decoration-muted-foreground/50 tracking-tight text-6xl font-semibold leading-tight text-primary">
                   {displayName}
                   <span className="text-muted-foreground ml-2">
                     {agentAvatar && agentAvatar}

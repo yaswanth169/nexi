@@ -8,13 +8,11 @@ import React, {
   useImperativeHandle,
 } from 'react';
 import { motion } from 'framer-motion';
-import { Loader2, X } from 'lucide-react';
-import { Card, CardContent } from '@/components/ui/card';
+import { Loader2 } from 'lucide-react';
 import { handleFiles } from './file-upload-handler';
 import { MessageInput } from './message-input';
 import { AttachmentGroup } from '../attachment-group';
 import { useModelSelection } from './_use-model-selection';
-import { AgentSelector } from './agent-selector';
 import { useFileDelete } from '@/hooks/react-query/files';
 import { useQueryClient } from '@tanstack/react-query';
 
@@ -73,7 +71,6 @@ export const ChatInput = forwardRef<ChatInputHandles, ChatInputProps>(
       onAgentSelect,
       agentName,
       messages = [],
-      bgColor = 'bg-sidebar',
     },
     ref,
   ) => {
@@ -179,36 +176,20 @@ export const ChatInput = forwardRef<ChatInputHandles, ChatInputProps>(
 
     const removeUploadedFile = (index: number) => {
       const fileToRemove = uploadedFiles[index];
-
-      // Clean up local URL if it exists
-      if (fileToRemove.localUrl) {
-        URL.revokeObjectURL(fileToRemove.localUrl);
-      }
-
-      // Remove from local state immediately for responsive UI
+      if (fileToRemove.localUrl) URL.revokeObjectURL(fileToRemove.localUrl);
       setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
       if (!sandboxId && pendingFiles.length > index) {
         setPendingFiles((prev) => prev.filter((_, i) => i !== index));
       }
-
-      // Check if file is referenced in existing chat messages before deleting from server
-      const isFileUsedInChat = messages.some(message => {
+      const isFileUsedInChat = messages.some((message) => {
         const content = typeof message.content === 'string' ? message.content : '';
         return content.includes(`[Uploaded File: ${fileToRemove.path}]`);
       });
-
-      // Only delete from server if file is not referenced in chat history
       if (sandboxId && fileToRemove.path && !isFileUsedInChat) {
         deleteFileMutation.mutate({
           sandboxId,
           filePath: fileToRemove.path,
-        }, {
-          onError: (error) => {
-            console.error('Failed to delete file from server:', error);
-          }
         });
-      } else if (isFileUsedInChat) {
-        console.log(`Skipping server deletion for ${fileToRemove.path} - file is referenced in chat history`);
       }
     };
 
@@ -225,16 +206,15 @@ export const ChatInput = forwardRef<ChatInputHandles, ChatInputProps>(
     };
 
     return (
-      <div className="mx-auto w-full max-w-4xl">
-        <Card
-          className="shadow-none w-full max-w-4xl mx-auto bg-transparent border-none rounded-xl overflow-hidden"
+      <div className="w-full max-w-3xl mx-auto px-2">
+        <div
+          className="rounded-2xl border border-white/10 bg-white/40 dark:bg-white/10 backdrop-blur-md shadow-lg shadow-purple-400/10 dark:shadow-fuchsia-500/10 overflow-hidden"
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={(e) => {
             e.preventDefault();
             e.stopPropagation();
             setIsDraggingOver(false);
-
             if (fileInputRef.current && e.dataTransfer.files.length > 0) {
               const files = Array.from(e.dataTransfer.files);
               handleFiles(
@@ -244,64 +224,65 @@ export const ChatInput = forwardRef<ChatInputHandles, ChatInputProps>(
                 setUploadedFiles,
                 setIsUploading,
                 messages,
-                queryClient,
+                queryClient
               );
             }
           }}
         >
-          <div className="w-full text-sm flex flex-col justify-between items-start rounded-lg">
-            <CardContent className={`w-full p-1.5 pb-2 ${bgColor} rounded-2xl border`}>
+          <div className="w-full flex flex-col gap-2 p-3">
+            {!hideAttachments && uploadedFiles.length > 0 && (
               <AttachmentGroup
-                files={uploadedFiles || []}
+                files={uploadedFiles}
                 sandboxId={sandboxId}
                 onRemove={removeUploadedFile}
                 layout="inline"
                 maxHeight="216px"
-                showPreviews={true}
+                showPreviews
               />
-              <MessageInput
-                ref={textareaRef}
-                value={value}
-                onChange={handleChange}
-                onSubmit={handleSubmit}
-                onTranscription={handleTranscription}
-                placeholder={placeholder}
-                loading={loading}
-                disabled={disabled}
-                isAgentRunning={isAgentRunning}
-                onStopAgent={onStopAgent}
-                isDraggingOver={isDraggingOver}
-                uploadedFiles={uploadedFiles}
+            )}
 
-                fileInputRef={fileInputRef}
-                isUploading={isUploading}
-                sandboxId={sandboxId}
-                setPendingFiles={setPendingFiles}
-                setUploadedFiles={setUploadedFiles}
-                setIsUploading={setIsUploading}
-                hideAttachments={hideAttachments}
-                messages={messages}
-
-                selectedModel={selectedModel}
-                onModelChange={handleModelChange}
-                modelOptions={modelOptions}
-                subscriptionStatus={subscriptionStatus}
-                canAccessModel={canAccessModel}
-                refreshCustomModels={refreshCustomModels}
-              />
-            </CardContent>
+            <MessageInput
+              ref={textareaRef}
+              value={value}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              onTranscription={handleTranscription}
+              placeholder={placeholder}
+              loading={loading}
+              disabled={disabled}
+              isAgentRunning={isAgentRunning}
+              onStopAgent={onStopAgent}
+              isDraggingOver={isDraggingOver}
+              uploadedFiles={uploadedFiles}
+              fileInputRef={fileInputRef}
+              isUploading={isUploading}
+              sandboxId={sandboxId}
+              setPendingFiles={setPendingFiles}
+              setUploadedFiles={setUploadedFiles}
+              setIsUploading={setIsUploading}
+              hideAttachments={hideAttachments}
+              messages={messages}
+              selectedModel={selectedModel}
+              onModelChange={handleModelChange}
+              modelOptions={modelOptions}
+              subscriptionStatus={subscriptionStatus}
+              canAccessModel={canAccessModel}
+              refreshCustomModels={refreshCustomModels}
+            />
           </div>
-        </Card>
+        </div>
 
         {isAgentRunning && (
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 0, y: -6 }}
             animate={{ opacity: 1, y: 0 }}
-            className="pb-4 -mt-4 w-full flex items-center justify-center"
+            className="mt-2 flex items-center justify-center"
           >
             <div className="text-xs text-muted-foreground flex items-center gap-2">
               <Loader2 className="h-3 w-3 animate-spin" />
-              <span>{agentName ? `${agentName} is working...` : 'NexI is working...'}</span>
+              <span>
+                {agentName ? `${agentName} is working...` : 'NexI is working...'}
+              </span>
             </div>
           </motion.div>
         )}

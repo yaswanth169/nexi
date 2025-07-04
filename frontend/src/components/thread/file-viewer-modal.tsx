@@ -1195,189 +1195,96 @@ export function FileViewerModal({
   // --- Render --- //
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-[90vw] md:max-w-[1200px] w-[95vw] h-[90vh] max-h-[900px] flex flex-col p-0 gap-0 overflow-hidden">
-        <DialogHeader className="px-4 py-2 border-b flex-shrink-0 flex flex-row gap-4 items-center">
-          <DialogTitle className="text-lg font-semibold">
-            Workspace Files
-          </DialogTitle>
+      <DialogContent className="sm:max-w-[90vw] md:max-w-[1200px] w-[95vw] h-[90vh] max-h-[900px] flex flex-col p-0 gap-0 overflow-hidden rounded-2xl border border-muted bg-gradient-to-br from-background/80 to-muted/70 shadow-[0_0_40px_-8px_rgba(100,100,255,0.3)] backdrop-blur-xl">
+        {/* Header */}
+        <DialogHeader className="px-6 py-4 border-b border-border flex-shrink-0 flex flex-row gap-4 items-center justify-between bg-muted/10">
+          <div className="flex items-center gap-4">
+            <DialogTitle className="text-lg font-semibold tracking-tight text-foreground">
+              Workspace Files
+            </DialogTitle>
 
-          {/* Download progress display */}
-          {downloadProgress && (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <Loader className="h-3 w-3 animate-spin" />
+            {/* Download progress */}
+            {downloadProgress && (
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Loader className="h-4 w-4 animate-spin" />
                 <span>
-                  {downloadProgress.total > 0
-                    ? `${downloadProgress.current}/${downloadProgress.total}`
-                    : 'Preparing...'
-                  }
+                  {downloadProgress.total > 0 ? `${downloadProgress.current}/${downloadProgress.total}` : 'Preparing...'}
                 </span>
+                <span className="truncate max-w-[200px]">{downloadProgress.currentFile}</span>
               </div>
-              <span className="max-w-[200px] truncate">
-                {downloadProgress.currentFile}
+            )}
+          </div>
+
+          {/* Navigation arrows */}
+          {isFileListMode && selectedFilePath && filePathList?.length > 1 && currentFileIndex >= 0 && (
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="icon" onClick={navigatePrevious} disabled={currentFileIndex <= 0} className="h-8 w-8">
+                <ChevronLeft className="h-4 w-4" />
+              </Button>
+              <span className="text-xs text-muted-foreground">
+                {currentFileIndex + 1} / {filePathList.length}
               </span>
+              <Button variant="ghost" size="icon" onClick={navigateNext} disabled={currentFileIndex >= filePathList.length - 1} className="h-8 w-8">
+                <ChevronRight className="h-4 w-4" />
+              </Button>
             </div>
           )}
-
-          <div className="flex items-center gap-2">
-            {/* Navigation arrows for file list mode */}
-            {(() => {
-              // Debug logging
-              console.log('[FILE VIEWER DEBUG] Navigation visibility check:', {
-                isFileListMode,
-                selectedFilePath,
-                filePathList,
-                filePathListLength: filePathList?.length,
-                currentFileIndex,
-                shouldShow: isFileListMode && selectedFilePath && filePathList && filePathList.length > 1 && currentFileIndex >= 0
-              });
-
-              return isFileListMode && selectedFilePath && filePathList && filePathList.length > 1 && currentFileIndex >= 0;
-            })() && (
-                <>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={navigatePrevious}
-                    disabled={currentFileIndex <= 0}
-                    className="h-8 w-8 p-0"
-                    title="Previous file (←)"
-                  >
-                    <ChevronLeft className="h-4 w-4" />
-                  </Button>
-                  <div className="text-xs text-muted-foreground px-1">
-                    {currentFileIndex + 1} / {filePathList.length}
-                  </div>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={navigateNext}
-                    disabled={currentFileIndex >= filePathList.length - 1}
-                    className="h-8 w-8 p-0"
-                    title="Next file (→)"
-                  >
-                    <ChevronRight className="h-4 w-4" />
-                  </Button>
-                </>
-              )}
-          </div>
         </DialogHeader>
 
-        {/* Navigation Bar */}
-        <div className="px-4 py-2 border-b flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={navigateHome}
-            className="h-8 w-8"
-            title="Go to home directory"
-          >
-            <Home className="h-4 w-4" />
-          </Button>
-
-          <div className="flex items-center overflow-x-auto flex-1 min-w-0 scrollbar-hide whitespace-nowrap">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="h-7 px-2 text-sm font-medium min-w-fit flex-shrink-0"
-              onClick={navigateHome}
-            >
-              home
+        {/* Toolbar */}
+        <div className="px-6 py-3 border-b border-border flex items-center justify-between bg-background/80 backdrop-blur-sm">
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="icon" onClick={navigateHome} className="h-8 w-8">
+              <Home className="h-4 w-4" />
             </Button>
-
-            {currentPath !== '/workspace' && (
-              <>
-                {getBreadcrumbSegments(currentPath).map((segment, index) => (
-                  <Fragment key={segment.path}>
-                    <ChevronRight className="h-4 w-4 mx-1 text-muted-foreground opacity-50 flex-shrink-0" />
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      className="h-7 px-2 text-sm font-medium truncate max-w-[200px]"
-                      onClick={() => navigateToBreadcrumb(segment.path)}
-                    >
-                      {segment.name}
-                    </Button>
-                  </Fragment>
-                ))}
-              </>
-            )}
-
-            {selectedFilePath && (
-              <>
-                <ChevronRight className="h-4 w-4 mx-1 text-muted-foreground opacity-50 flex-shrink-0" />
-                <div className="flex items-center gap-2">
-                  <span className="text-sm font-medium truncate">
+            <div className="flex items-center gap-1 text-sm text-muted-foreground whitespace-nowrap overflow-x-auto scrollbar-hide">
+              <Button variant="link" size="sm" className="text-muted-foreground font-medium" onClick={navigateHome}>
+                home
+              </Button>
+              {getBreadcrumbSegments(currentPath).map((segment) => (
+                <Fragment key={segment.path}>
+                  <ChevronRight className="h-4 w-4" />
+                  <Button variant="link" size="sm" onClick={() => navigateToBreadcrumb(segment.path)} className="text-foreground font-medium truncate max-w-[150px]">
+                    {segment.name}
+                  </Button>
+                </Fragment>
+              ))}
+              {selectedFilePath && (
+                <>
+                  <ChevronRight className="h-4 w-4" />
+                  <span className="text-foreground font-medium truncate max-w-[150px]">
                     {selectedFilePath.split('/').pop()}
                   </span>
-                </div>
-              </>
-            )}
+                </>
+              )}
+            </div>
           </div>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {selectedFilePath && (
+          <div className="flex items-center gap-2">
+            {selectedFilePath ? (
               <>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={handleDownload}
-                  disabled={isDownloading || isCachedFileLoading}
-                  className="h-8 gap-1"
-                >
-                  {isDownloading ? (
-                    <Loader className="h-4 w-4 animate-spin" />
-                  ) : (
-                    <Download className="h-4 w-4" />
-                  )}
-                  <span className="hidden sm:inline">Download</span>
+                <Button variant="secondary" size="sm" onClick={handleDownload} disabled={isDownloading || isCachedFileLoading}>
+                  {isDownloading ? <Loader className="h-4 w-4 animate-spin" /> : <Download className="h-4 w-4" />}
+                  <span className="ml-2 hidden sm:inline">Download</span>
                 </Button>
-
-                {/* Replace the Export as PDF button with a dropdown */}
                 {isMarkdownFile(selectedFilePath) && (
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        disabled={
-                          isExportingPdf ||
-                          isCachedFileLoading ||
-                          contentError !== null
-                        }
-                        className="h-8 gap-1"
-                      >
-                        {isExportingPdf ? (
-                          <Loader className="h-4 w-4 animate-spin" />
-                        ) : (
-                          <FileText className="h-4 w-4" />
-                        )}
-                        <span className="hidden sm:inline">Export as PDF</span>
+                      <Button variant="secondary" size="sm" disabled={isExportingPdf || isCachedFileLoading || !!contentError}>
+                        {isExportingPdf ? <Loader className="h-4 w-4 animate-spin" /> : <FileText className="h-4 w-4" />}
+                        <span className="ml-2 hidden sm:inline">Export</span>
                         <ChevronDown className="h-3 w-3 ml-1" />
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem
-                        onClick={() => handleExportPdf('portrait')}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        <span className="rotate-90">⬌</span> Portrait
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        onClick={() => handleExportPdf('landscape')}
-                        className="flex items-center gap-2 cursor-pointer"
-                      >
-                        <span>⬌</span> Landscape
-                      </DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleExportPdf('portrait')}>Portrait</DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => handleExportPdf('landscape')}>Landscape</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 )}
               </>
-            )}
-
-            {!selectedFilePath && (
+            ) : (
               <>
-                {/* Download All button - only show when in home directory */}
                 {currentPath === '/workspace' && (
                   <Button
                     variant="outline"
@@ -1409,179 +1316,86 @@ export function FileViewerModal({
                   )}
                   <span className="hidden sm:inline">Upload</span>
                 </Button>
+                <input type="file" ref={fileInputRef} className="hidden" onChange={processUpload} disabled={isUploading} />
               </>
             )}
-
-            <input
-              type="file"
-              ref={fileInputRef}
-              className="hidden"
-              onChange={processUpload}
-              disabled={isUploading}
-            />
           </div>
         </div>
 
-        {/* Content Area */}
-        <div className="flex-1 overflow-hidden">
+        {/* Content */}
+        <div className="flex-1 overflow-hidden bg-background">
           {selectedFilePath ? (
-            /* File Viewer */
-            <div className="h-full w-full overflow-auto">
+            <div className="h-full w-full overflow-auto bg-background rounded-b-2xl">
               {isCachedFileLoading ? (
-                <div className="h-full w-full flex flex-col items-center justify-center">
-                  <Loader className="h-8 w-8 animate-spin text-primary mb-3" />
-                  <p className="text-sm text-muted-foreground">
-                    Loading file{selectedFilePath ? `: ${selectedFilePath.split('/').pop()}` : '...'}
-                  </p>
-                  <p className="text-xs text-muted-foreground/70 mt-1">
-                    {(() => {
-                      // Normalize the path for consistent cache checks
-                      if (!selectedFilePath) return "Preparing...";
-
-                      let normalizedPath = selectedFilePath;
-                      if (!normalizedPath.startsWith('/workspace')) {
-                        normalizedPath = `/workspace/${normalizedPath.startsWith('/') ? normalizedPath.substring(1) : normalizedPath}`;
-                      }
-
-                      // Detect the appropriate content type based on file extension
-                      const detectedContentType = FileCache.getContentTypeFromPath(normalizedPath);
-
-                      // Check for cache with the correct content type
-                      const isCached = FileCache.has(`${sandboxId}:${normalizedPath}:${detectedContentType}`);
-
-                      return isCached
-                        ? "Using cached version"
-                        : "Fetching from server";
-                    })()}
-                  </p>
+                <div className="h-full flex items-center justify-center">
+                  <Loader className="h-6 w-6 animate-spin text-primary" />
+                  <span className="ml-3 text-sm text-muted-foreground">Loading {selectedFilePath.split('/').pop()}</span>
                 </div>
               ) : contentError ? (
-                <div className="h-full w-full flex items-center justify-center p-4">
-                  <div className="max-w-md p-6 text-center border rounded-lg bg-muted/10">
-                    <AlertTriangle className="h-10 w-10 text-orange-500 mx-auto mb-4" />
-                    <h3 className="text-lg font-medium mb-2">
-                      Error Loading File
-                    </h3>
-                    <p className="text-sm text-muted-foreground mb-4">
-                      {contentError}
-                    </p>
+                <div className="h-full w-full flex items-center justify-center">
+                  <div className="p-6 text-center border rounded-xl bg-muted/20">
+                    <AlertTriangle className="h-8 w-8 text-orange-500 mx-auto mb-3" />
+                    <h3 className="text-base font-semibold">Error Loading File</h3>
+                    <p className="text-sm text-muted-foreground my-2">{contentError}</p>
                     <div className="flex justify-center gap-3">
-                      <Button
-                        onClick={() => {
-                          setContentError(null);
-                          openFile({
-                            path: selectedFilePath,
-                            name: selectedFilePath.split('/').pop() || '',
-                            is_dir: false,
-                            size: 0,
-                            mod_time: new Date().toISOString(),
-                          } as FileInfo);
-                        }}
-                      >
-                        Retry
-                      </Button>
-                      <Button
-                        variant="outline"
-                        onClick={() => {
-                          clearSelectedFile();
-                        }}
-                      >
-                        Back to Files
-                      </Button>
+                      <Button onClick={() => {
+                        setContentError(null);
+                        openFile({
+                          path: selectedFilePath,
+                          name: selectedFilePath.split('/').pop() || '',
+                          is_dir: false,
+                          size: 0,
+                          mod_time: new Date().toISOString(),
+                        } as FileInfo);
+                      }}>Retry</Button>
+                      <Button variant="outline" onClick={clearSelectedFile}>Back</Button>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="h-full w-full relative">
-                  {(() => {
-                    // Safety check: don't render text content for binary files
-                    const isImageFile = FileCache.isImageFile(selectedFilePath);
-                    const isPdfFile = FileCache.isPdfFile(selectedFilePath);
-                    const extension = selectedFilePath?.split('.').pop()?.toLowerCase();
-                    const isOfficeFile = ['xlsx', 'xls', 'docx', 'doc', 'pptx', 'ppt'].includes(extension || '');
-                    const isBinaryFile = isImageFile || isPdfFile || isOfficeFile;
-
-                    // For binary files, only render if we have a blob URL
-                    if (isBinaryFile && !blobUrlForRenderer) {
-                      return (
-                        <div className="h-full w-full flex items-center justify-center">
-                          <div className="text-sm text-muted-foreground">
-                            Loading {isPdfFile ? 'PDF' : isImageFile ? 'image' : 'file'}...
-                          </div>
-                        </div>
-                      );
-                    }
-
-                    return (
-                      <FileRenderer
-                        key={selectedFilePath}
-                        content={isBinaryFile ? null : textContentForRenderer}
-                        binaryUrl={blobUrlForRenderer}
-                        fileName={selectedFilePath}
-                        className="h-full w-full"
-                        project={projectWithSandbox}
-                        markdownRef={
-                          isMarkdownFile(selectedFilePath) ? markdownRef : undefined
-                        }
-                        onDownload={handleDownload}
-                        isDownloading={isDownloading}
-                      />
-                    );
-                  })()}
-                </div>
+                <FileRenderer
+                  key={selectedFilePath}
+                  content={textContentForRenderer}
+                  binaryUrl={blobUrlForRenderer}
+                  fileName={selectedFilePath}
+                  className="h-full w-full"
+                  project={projectWithSandbox}
+                  markdownRef={isMarkdownFile(selectedFilePath) ? markdownRef : undefined}
+                  onDownload={handleDownload}
+                  isDownloading={isDownloading}
+                />
               )}
             </div>
           ) : (
-            /* File Explorer */
-            <div className="h-full w-full">
+            <ScrollArea className="h-full w-full px-4 py-3">
               {isLoadingFiles ? (
-                <div className="h-full w-full flex items-center justify-center">
+                <div className="h-full flex items-center justify-center">
                   <Loader className="h-6 w-6 animate-spin text-primary" />
                 </div>
               ) : files.length === 0 ? (
-                <div className="h-full w-full flex flex-col items-center justify-center">
-                  <Folder className="h-12 w-12 mb-2 text-muted-foreground opacity-30" />
-                  <p className="text-sm text-muted-foreground">
-                    Directory is empty
-                  </p>
+                <div className="h-full flex items-center justify-center">
+                  <Folder className="h-10 w-10 text-muted-foreground opacity-40" />
+                  <p className="text-sm text-muted-foreground ml-3">Directory is empty</p>
                 </div>
               ) : (
-                <ScrollArea className="h-full w-full p-2">
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 p-4">
-                    {files.map((file) => (
-                      <button
-                        key={file.path}
-                        className={`flex flex-col items-center p-3 rounded-lg border hover:bg-muted/50 transition-colors ${selectedFilePath === file.path
-                          ? 'bg-muted border-primary/20'
-                          : ''
-                          }`}
-                        onClick={() => {
-                          if (file.is_dir) {
-                            console.log(
-                              `[FILE VIEWER] Folder clicked: ${file.name}, path: ${file.path}`,
-                            );
-                            navigateToFolder(file);
-                          } else {
-                            openFile(file);
-                          }
-                        }}
-                      >
-                        <div className="w-12 h-12 flex items-center justify-center mb-1">
-                          {file.is_dir ? (
-                            <Folder className="h-9 w-9 text-blue-500" />
-                          ) : (
-                            <File className="h-8 w-8 text-muted-foreground" />
-                          )}
-                        </div>
-                        <span className="text-xs text-center font-medium truncate max-w-full">
-                          {file.name}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </ScrollArea>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {files.map((file) => (
+                    <button
+                      key={file.path}
+                      onClick={() => file.is_dir ? navigateToFolder(file) : openFile(file)}
+                      className={`flex flex-col items-center p-4 rounded-xl border border-border hover:bg-accent/50 transition-colors ${selectedFilePath === file.path ? 'bg-accent border-primary' : ''}`}
+                    >
+                      <div className="w-12 h-12 flex items-center justify-center mb-2">
+                        {file.is_dir ? <Folder className="h-8 w-8 text-blue-500" /> : <File className="h-7 w-7 text-muted-foreground" />}
+                      </div>
+                      <span className="text-sm text-center truncate max-w-full">
+                        {file.name}
+                      </span>
+                    </button>
+                  ))}
+                </div>
               )}
-            </div>
+            </ScrollArea>
           )}
         </div>
       </DialogContent>

@@ -18,11 +18,11 @@ export function KortixLogo({ size = 24 }: KortixLogoProps) {
 
   return (
     <Image
-        src="/favicon.png"
+        src="/robot.png"
         alt="NexI"
         width={size}
         height={size}
-        className={`${mounted && theme === 'dark' ? 'invert' : ''} flex-shrink-0`}
+        className={`${mounted && theme !== 'dark' ? 'invert' : ''} flex-shrink-0`}
       />
   );
 }
