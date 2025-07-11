@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight, Mail, User, MessageSquare } from 'lucide-react';
+import { ArrowRight, Mail, User, MessageSquare, Rocket, Calendar, MapPin } from 'lucide-react';
 import { siteConfig } from '@/lib/home';
 import { SectionHeader } from '@/components/home/section-header';
 import Marquee from 'react-fast-marquee';
@@ -59,74 +59,79 @@ export function UseCasesSection() {
 
         {/* Selected Use Case Highlighted */}
         {selectedUseCase && (
-          <div className="mt-12 flex flex-col md:flex-row gap-6 items-start bg-[#0e0e0e] border border-neutral-800 rounded-2xl p-6 shadow-xl transition-all duration-300 animate-fade-in">
-            <div className="relative w-full md:w-[280px] h-[180px] rounded-xl overflow-hidden border border-neutral-700">
-              <img
-                src={selectedUseCase.image}
-                alt={selectedUseCase.title}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(161,143,255,0.1)_0%,rgba(14,14,14,0.9)_100%)] pointer-events-none rounded-xl" />
-            </div>
-
-            <div className="flex-1 flex flex-col justify-between">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="rounded-full border border-[#a18fff33] bg-[#a18fff11] p-2">
-                  <svg
-                    width="20"
-                    height="20"
-                    viewBox="0 0 24 24"
-                    fill="none"
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="text-[#a18fff]"
-                  >
-                    {selectedUseCase.icon}
-                  </svg>
-                </div>
-                <h3 className="text-lg font-semibold text-white">
-                  {selectedUseCase.title}
-                </h3>
+          <div className="mt-12 flex flex-col gap-6 items-start bg-[#0e0e0e] border border-neutral-800 rounded-2xl p-6 shadow-xl transition-all duration-300 animate-fade-in">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="rounded-full border border-[#a18fff33] bg-[#a18fff11] p-2">
+                <svg
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="text-[#a18fff]"
+                >
+                  {selectedUseCase.icon}
+                </svg>
               </div>
-              <p className="text-sm text-neutral-400 leading-relaxed mb-6">
-                {selectedUseCase.description}
-              </p>
-
-              {/* Connect Form */}
-              <form className="mt-4 grid grid-cols-1 gap-4">
-                <div className="flex items-center gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2">
-                  <User className="text-[#a18fff] size-4" />
-                  <input
-                    type="text"
-                    placeholder="Your Name"
-                    className="flex-1 bg-transparent text-sm text-white outline-none"
-                  />
-                </div>
-                <div className="flex items-center gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2">
-                  <Mail className="text-[#a18fff] size-4" />
-                  <input
-                    type="email"
-                    placeholder="Your Email"
-                    className="flex-1 bg-transparent text-sm text-white outline-none"
-                  />
-                </div>
-                <div className="flex items-start gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2">
-                  <MessageSquare className="text-[#a18fff] size-4 mt-1" />
-                  <textarea
-                    placeholder="Tell us about your use case or need..."
-                    className="flex-1 bg-transparent text-sm text-white outline-none resize-none h-[80px]"
-                  />
-                </div>
-                <div className="flex justify-end">
-                  <button
-                    type="submit"
-                    className="inline-flex items-center px-6 py-2 border border-[#a18fff] text-sm font-semibold text-[#a18fff] rounded-full hover:bg-[#a18fff11] transition-all duration-200"
-                  >
-                    <ArrowRight className="mr-2 size-4" />
-                    Contact NexI Team
-                  </button>
-                </div>
-              </form>
+              <h3 className="text-lg font-semibold text-white">
+                {selectedUseCase.title}
+              </h3>
             </div>
+            <p className="text-sm text-neutral-400 leading-relaxed mb-4">
+              {selectedUseCase.description}
+            </p>
+
+            {/* Interactive Connect Form */}
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-4 w-full">
+              <div className="flex items-center gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-[#a18fff] col-span-1">
+                <User className="text-[#a18fff] size-4" />
+                <input
+                  type="text"
+                  placeholder="Your Name"
+                  className="flex-1 bg-transparent text-sm text-white outline-none"
+                />
+              </div>
+              <div className="flex items-center gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-[#a18fff] col-span-1">
+                <Mail className="text-[#a18fff] size-4" />
+                <input
+                  type="email"
+                  placeholder="Your Email"
+                  className="flex-1 bg-transparent text-sm text-white outline-none"
+                />
+              </div>
+              <div className="flex items-center gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-[#a18fff] col-span-1">
+                <Calendar className="text-[#a18fff] size-4" />
+                <input
+                  type="date"
+                  placeholder="Preferred Date"
+                  className="flex-1 bg-transparent text-sm text-white outline-none"
+                />
+              </div>
+              <div className="flex items-center gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-[#a18fff] col-span-1">
+                <MapPin className="text-[#a18fff] size-4" />
+                <input
+                  type="text"
+                  placeholder="Your Location"
+                  className="flex-1 bg-transparent text-sm text-white outline-none"
+                />
+              </div>
+              <div className="flex items-start gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2 focus-within:ring-2 focus-within:ring-[#a18fff] col-span-full">
+                <MessageSquare className="text-[#a18fff] size-4 mt-1" />
+                <textarea
+                  placeholder="Tell us about your use case or need..."
+                  className="flex-1 bg-transparent text-sm text-white outline-none resize-none h-[100px]"
+                />
+              </div>
+              <div className="flex justify-end col-span-full">
+                <button
+                  type="submit"
+                  className="inline-flex items-center gap-2 px-6 py-2 border border-[#a18fff] text-sm font-semibold text-[#a18fff] rounded-full hover:bg-[#a18fff11] transition-all duration-200"
+                >
+                  <Rocket className="size-4 animate-bounce" />
+                  Contact NexI Team
+                </button>
+              </div>
+            </form>
           </div>
         )}
 
