@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, Mail, User, MessageSquare } from 'lucide-react';
 import { siteConfig } from '@/lib/home';
 import { SectionHeader } from '@/components/home/section-header';
 import Marquee from 'react-fast-marquee';
@@ -66,7 +66,7 @@ export function UseCasesSection() {
                 alt={selectedUseCase.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#1a0f3d88] via-[#0e0e0e44] to-transparent pointer-events-none rounded-xl" />
+              <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(161,143,255,0.1)_0%,rgba(14,14,14,0.9)_100%)] pointer-events-none rounded-xl" />
             </div>
 
             <div className="flex-1 flex flex-col justify-between">
@@ -90,17 +90,42 @@ export function UseCasesSection() {
               <p className="text-sm text-neutral-400 leading-relaxed mb-6">
                 {selectedUseCase.description}
               </p>
-              <div className="flex justify-end">
-                <a
-                  href={selectedUseCase.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-6 py-2 border border-[#a18fff] text-sm font-semibold text-[#a18fff] rounded-full hover:bg-[#a18fff11] transition-all duration-200"
-                >
-                  <ArrowRight className="mr-2 size-4" />
-                  Watch Full Video
-                </a>
-              </div>
+
+              {/* Connect Form */}
+              <form className="mt-4 grid grid-cols-1 gap-4">
+                <div className="flex items-center gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2">
+                  <User className="text-[#a18fff] size-4" />
+                  <input
+                    type="text"
+                    placeholder="Your Name"
+                    className="flex-1 bg-transparent text-sm text-white outline-none"
+                  />
+                </div>
+                <div className="flex items-center gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2">
+                  <Mail className="text-[#a18fff] size-4" />
+                  <input
+                    type="email"
+                    placeholder="Your Email"
+                    className="flex-1 bg-transparent text-sm text-white outline-none"
+                  />
+                </div>
+                <div className="flex items-start gap-2 bg-[#111] border border-neutral-700 rounded-lg px-3 py-2">
+                  <MessageSquare className="text-[#a18fff] size-4 mt-1" />
+                  <textarea
+                    placeholder="Tell us about your use case or need..."
+                    className="flex-1 bg-transparent text-sm text-white outline-none resize-none h-[80px]"
+                  />
+                </div>
+                <div className="flex justify-end">
+                  <button
+                    type="submit"
+                    className="inline-flex items-center px-6 py-2 border border-[#a18fff] text-sm font-semibold text-[#a18fff] rounded-full hover:bg-[#a18fff11] transition-all duration-200"
+                  >
+                    <ArrowRight className="mr-2 size-4" />
+                    Contact NexI Team
+                  </button>
+                </div>
+              </form>
             </div>
           </div>
         )}
